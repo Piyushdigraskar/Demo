@@ -1,48 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>JS For Beginners</title>
-    <link rel="stylesheet" href="style.css">
-  </head>
-  <body>
-    <header>
-      <h1>JS For Beginners</h1>
-    </header>
-
-    <section class="container">
-      <form id="my-form">
-        <h1>Add User</h1>
-        <div class="msg"></div>
-        <div>
-          <label for="name">Name:</label>
-          <input type="text" id="name">
-        </div>
-        <div>
-          <label for="email">Email:</label>
-          <input type="text" id="email">
-        </div>
-        <input class="btn" type="submit" value="Submit">
-      </form>
-
-      <ul id="users"></ul>
-
-    </section>
-    
-
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form onsubmit="saveToLocal(event)" >
+        <label >Name:</label>
+        <input type="text" name="name" required>
+        <label >Email:</label>
+        <input type="email" name="email" required>
+        <label >Phone-number:</label>
+        <input type="tel" name="phonenumber">
+        <button>Submit</button>   
+    </form>   
+       
+    <ul id="users"></ul>
     <script type="text/javascript">
-      let myObj ={
-        name :'adkins',
-        age :50
+      function saveToLocal(event){
+        event.preventDefault();
+        const name=event.target.name.value;
+        const email=event.target.email.value;
+        const phonenumber=event.target.phonenumber.value;
+        let myObj ={
+        name ,
+        email ,
+        phonenumber
       }
-      let myObj_stringified =JSON.stringify(myObj);
 
-      localStorage.setItem('myObj',myObj_stringified);
-      let myObj_deserialized =JSON.parse(localStorage.getItem("myObj"));
-      console.log(myObj_deserialized);
+      localStorage.setItem(myObj.email,JSON.stringify(myObj));
+      
+      showUser(myObj);
+      }
+      function showUser(myObj){
+        const parentElem = document.getElementById('users');
+        const childelem = document.createElement('li');
+        const userInfo = document.createElement('span');
+        const deleteBtn =document.createElement('button');
+        
 
-    </script>
-  </body>
+        deleteBtn.innerText='Delete';
+        deleteBtn.addEventListener('click',function(){
+          parentElem.removeChild(childelem);
+          localStorage.removeItem(myObj.email);
+        })
+        
+        userInfo.innerText=`${myObj.name}-${myObj.email}-${myObj.phonenumber}`;
+        childelem.appendChild(userInfo);
+        childelem.appendChild(deleteBtn);
+        parentElem.appendChild(childelem);
+        
+      }
+
+    </script> 
+      
+</body>
+
 </html>
