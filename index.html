@@ -32,6 +32,17 @@
     </section>
     
 
-    <script src="dom7.js"></script>
+    <script type="text/javascript">
+      let myObj ={
+        name :'adkins',
+        age :50
+      }
+      let myObj_stringified =JSON.stringify(myObj);
+
+      localStorage.setItem('myObj',myObj_stringified);
+      let myObj_deserialized =JSON.parse(localStorage.getItem("myObj"));
+      console.log(myObj_deserialized);
+
+    </script>
   </body>
 </html>
