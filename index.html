@@ -39,17 +39,24 @@
         const childelem = document.createElement('li');
         const userInfo = document.createElement('span');
         const deleteBtn =document.createElement('button');
+        const editBtn =document.createElement('button');
         
 
         deleteBtn.innerText='Delete';
+        editBtn.innerText='Edit';
         deleteBtn.addEventListener('click',function(){
           parentElem.removeChild(childelem);
+          
+        })
+        editBtn.addEventListener('click', function(){
           localStorage.removeItem(myObj.email);
+          userInfo.innerText = myObj.email;
         })
         
         userInfo.innerText=`${myObj.name}-${myObj.email}-${myObj.phonenumber}`;
         childelem.appendChild(userInfo);
         childelem.appendChild(deleteBtn);
+        childelem.appendChild(editBtn);
         parentElem.appendChild(childelem);
         
       }
