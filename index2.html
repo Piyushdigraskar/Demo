@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <form onsubmit="saveToLocal(event)">
+        <label>Choose Expenseamount:</label>
+        <input type="number" name="Expense" required>
+        <label>Choose Discription:</label>
+        <input type="text" name="Discription" required>
+        <label>Choose A Category:</label>
+        <select type="text" name="Category">
+            <option value="food">food </option>
+            <option value="Movie">Movie </option>
+            <option value="Electricity">Electricity </option>
+            <option value="Fuel">Fuel </option>
+        </select>
+        <button>Add Expense</button>
+    </form>
+
+    <ul id="users"></ul>
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            loadFromLocal();
+        });
+        function saveToLocal(event) {
+            event.preventDefault();
+            const Expense = event.target.Expense.value;
+            const Discription = event.target.Discription.value;
+            const Category = event.target.Category.value;
+            let myObj = {
+                Expense,
+                Discription,
+                Category
+            };
+
+
+            localStorage.setItem(Discription, JSON.stringify(myObj));
+
+            showUser(myObj);
+            event.target.reset();
+        }
+
+        function showUser(myObj) {
+            const parentElem = document.getElementById('users');
+            const listItem = document.createElement('li');
+            const userInfo = document.createElement('span');
+            const deleteButton = document.createElement('button');
+            const editButton = document.createElement('button');
+
+
+            userInfo.innerText = `${myObj.Expense} -${myObj.Category}- ${myObj.Discription}  `;
+            deleteButton.innerText = 'Delete';
+            deleteButton.addEventListener('click', function () {
+                parentElem.removeChild(listItem);
+                localStorage.removeItem(myObj.Discription);
+            });
+
+            editButton.innerText = 'Edit';
+            editButton.addEventListener('click', function () {
+                const newExpense = prompt('Enter new expense amount:', myObj.Expense);
+                const newDiscription = prompt('Enter new Discription :', myObj.Discription);
+                const newCategory = prompt('Enter new Category :', myObj.Category);
+
+                myObj.Expense = newExpense || myObj.Expense;
+                myObj.Discription = newDiscription || myObj.Discription;
+                myObj.Category = newCategory || myObj.Category;
+
+                localStorage.setItem(myObj.Discription, JSON.stringify(myObj));
+                userInfo.innerText = `${myObj.Expense} -${myObj.Category}- ${myObj.Discription} `;
+            });
+
+
+            listItem.appendChild(userInfo);
+            listItem.appendChild(deleteButton);
+            listItem.appendChild(editButton);
+            parentElem.appendChild(listItem);
+        }
+        function loadFromLocal() {
+            const keys = Object.keys(localStorage);
+            const objectsArray = [];
+
+            for (let i = 0; i < keys.length; i++) {
+                const key = keys[i];
+                const myObj = JSON.parse(localStorage.getItem(key));
+                objectsArray.push(myObj);
+            }
+
+            for (let i = 0; i < objectsArray.length; i++) {
+                showUser(objectsArray[i]);
+            }
+        }
+    </script>
+</body>
+
+</html>
