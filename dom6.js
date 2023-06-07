@@ -8,6 +8,7 @@ form.addEventListener('submit', addItem);
 
 
 // Delete event
+
 itemList.addEventListener('click', removeItem);
 // Filter event
 filter.addEventListener('keyup', filterItems);
