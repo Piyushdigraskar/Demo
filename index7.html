@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <form onsubmit="saveToLocal(event)">
+    <label>Name:</label>
+    <input type="text" name="name" required>
+    <label>Email:</label>
+    <input type="email" name="email" required>
+    <label>Phone-number:</label>
+    <input type="tel" name="phonenumber">
+    <button>Submit</button>
+  </form>
+
+  <ul id="users"></ul>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+
+  <script type="text/javascript">
+    function saveToLocal(event) {
+      event.preventDefault();
+      const name = event.target.name.value;
+      const email = event.target.email.value;
+      const phonenumber = event.target.phonenumber.value;
+      // localStorage.setItem('name',name);
+      // localStorage.setItem('email',email);
+      // localStorage.setItem('phonenumber',phonenumber);
+      let myObj = {
+        name,
+        email,
+        phonenumber
+      }
+      axios.post("https://crudcrud.com/api/5cdffa4ea7a440388a147d4c584e4ed1/Appointment",myObj)
+        .then((respone) =>{
+          showUser(respone.data);
+          console.log(respone);
+        })
+        .catch((err)=>{
+          document.body.innerHTML = document.body.innerHTML + "<h3>Something went wrong</h3>";
+          console.log(err);
+        })
+      // localStorage.setItem(myObj.email, JSON.stringify(myObj));
+
+      // showUser(myObj);
+    }
+    window.addEventListener("DOMContentLoaded", ()=>{
+      axios.get("https://crudcrud.com/api/5cdffa4ea7a440388a147d4c584e4ed1/Appointment")
+      .then((respone) =>{
+          
+          console.log(respone);
+          for(var i=0; i<respone.data.length;i++){
+            showUser(respone.data[i]);
+          }
+        })
+        .catch((err)=>{
+          
+          console.log(err);
+        })
+
+
+      // const localStorobj = localStorage;
+      // const localstorageKeys = Object.keys(localStorobj);
+
+      // for(var i=0; i<localstorageKeys.length;i++){
+      //   const key = localstorageKeys[i];
+      //   const userdetaiString = localStorobj[key];
+      //   const userdetailobj = JSON.parse(userdetaiString);
+      //   showUser(userdetailobj);
+
+      //}
+    })
+    function showUser(myObj) {
+      const parentElem = document.getElementById('users');
+      const childelem = document.createElement('li');
+      const userInfo = document.createElement('span');
+      const deleteBtn = document.createElement('button');
+      const editBtn = document.createElement('button');
+
+      deleteBtn.innerHTML = "&#128465;"; // Delete icon
+      editBtn.innerHTML = "&#9998;";
+
+
+      deleteBtn.innerText = 'Delete';
+      editBtn.innerText = 'Edit';
+      deleteBtn.addEventListener('click', function () {
+        //delete usiong id
+        axios.delete(`https://crudcrud.com/api/5cdffa4ea7a440388a147d4c584e4ed1/Appointment/${myObj._id}`)
+        .then((respone)=>{
+            if(respone.status === 200){
+               parentElem.removeChild(childelem);
+            }  
+        })
+        .catch((err)=>{
+            console.log(err);
+        })
+
+      })
+      editBtn.addEventListener('click', function () {
+
+        const newName = prompt("Enter the name:", myObj.name);
+        const newEmail = prompt("Enter the email:", myObj.email);
+        const newPhoneNumber = prompt("Enter the Phone no:", myObj.phonenumber);
+
+        if (newName && newEmail && newPhoneNumber) {
+          const updateObj = {
+            ...myObj,
+            name: newName,
+            email: newEmail,
+            phonenumber: newPhoneNumber
+          };
+
+          axios.put(`https://crudcrud.com/api/5cdffa4ea7a440388a147d4c584e4ed1/Appointment/${myObj._id}`, updateObj)
+            .then((response) => {
+              if (response.status === 200) {
+                myObj.name = newName;
+                myObj.email = newEmail;
+                myObj.phonenumber = newPhoneNumber;
+                userInfo.innerText = `${myObj.name}-${myObj.email}-${myObj.phonenumber}`;
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+  }
+          
+
+            
+      })
+
+      userInfo.innerText = `${myObj.name}-${myObj.email}-${myObj.phonenumber}`;
+      childelem.appendChild(userInfo);
+      childelem.appendChild(deleteBtn);
+      childelem.appendChild(editBtn);
+      parentElem.appendChild(childelem);
+
+    }
+
+  </script>
+
+</body>
+
+</html>
