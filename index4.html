@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <form onsubmit="saveToLocal(event)">
+    <label>Name:</label>
+    <input type="text" name="name" required>
+    <label>Email:</label>
+    <input type="email" name="email" required>
+    <label>Phone-number:</label>
+    <input type="tel" name="phonenumber">
+    <button>Submit</button>
+  </form>
+
+  <ul id="users"></ul>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+
+  <script type="text/javascript">
+    function saveToLocal(event) {
+      event.preventDefault();
+      const name = event.target.name.value;
+      const email = event.target.email.value;
+      const phonenumber = event.target.phonenumber.value;
+      // localStorage.setItem('name',name);
+      // localStorage.setItem('email',email);
+      // localStorage.setItem('phonenumber',phonenumber);
+      let myObj = {
+        name,
+        email,
+        phonenumber
+      }
+      axios.post("https://crudcrud.com/api/5cdffa4ea7a440388a147d4c584e4ed1/Appointment",myObj)
+        .then((respone) =>{
+          showUser(respone.data);
+          console.log(respone);
+        })
+        .catch((err)=>{
+          document.body.innerHTML = document.body.innerHTML + "<h3>Something went wrong</h3>";
+          console.log(err);
+        })
+      // localStorage.setItem(myObj.email, JSON.stringify(myObj));
+
+      // showUser(myObj);
+    }
+    function showUser(myObj) {
+      const parentElem = document.getElementById('users');
+      const childelem = document.createElement('li');
+      const userInfo = document.createElement('span');
+      const deleteBtn = document.createElement('button');
+      const editBtn = document.createElement('button');
+
+
+      deleteBtn.innerText = 'Delete';
+      editBtn.innerText = 'Edit';
+      deleteBtn.addEventListener('click', function () {
+        parentElem.removeChild(childelem);
+
+      })
+      editBtn.addEventListener('click', function () {
+        localStorage.removeItem(myObj.email);
+        userInfo.innerText = myObj.email;
+      })
+
+      userInfo.innerText = `${myObj.name}-${myObj.email}-${myObj.phonenumber}`;
+      childelem.appendChild(userInfo);
+      childelem.appendChild(deleteBtn);
+      childelem.appendChild(editBtn);
+      parentElem.appendChild(childelem);
+
+    }
+
+  </script>
+
+</body>
+
+</html>
