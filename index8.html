@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <form onsubmit="saveToLocal(event)">
+        <label>Selling price:</label>
+        <input type="number" name="selling" required>
+        <label>Product name:</label>
+        <input type="text" name="name" required>
+        <label>Choose A Category:</label>
+        <select type="text" name="Category">
+            <option value="Food">Food </option>
+            <option value="Skincare">Skincare </option>
+            <option value="Electronics">Electronics </option>
+        </select>
+        <button>Add Product</button>
+    </form>
+
+    <ul id="users"></ul>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+    <script type="text/javascript">
+        
+        function saveToLocal(event) {
+            event.preventDefault();
+            const selling = event.target.selling.value;
+            const name = event.target.name.value;
+            const Category = event.target.Category.value;
+            let myObj = {
+                selling,
+                name,
+                Category
+            };
+            axios.post("https://crudcrud.com/api/00c9a7614036429389bf235b70c1b1cd/Work/",myObj)
+              .then((respone) =>{
+                showUser(respone.data);
+                console.log(respone);
+              })
+              .catch((err)=>{
+                document.body.innerHTML = document.body.innerHTML + "<h3>Something went wrong</h3>";
+                console.log(err);   
+              })
+
+            
+        }
+        window.addEventListener('DOMContentLoaded', function () {
+            axios.get("https://crudcrud.com/api/00c9a7614036429389bf235b70c1b1cd/Work/")
+            .then((respone) =>{
+                console.log(respone);
+                for(var i=0; i<respone.data.length;i++){
+                    showUser(respone.data[i]);
+                }
+            })
+            .catch((err)=>{
+                console.log(err);
+            })
+            });
+
+        function showUser(myObj) {
+            const parentElem = document.getElementById('users');
+            const childelem = document.createElement('li');
+            const userInfo = document.createElement('span');
+            const deleteBtn = document.createElement('button');
+            const editBtn = document.createElement('button');
+            
+            
+            deleteBtn.innerHTML = "&#128465;";
+            deleteBtn.innerText = 'Delete-user';
+            deleteBtn.addEventListener('click', function () {
+                axios.delete(`https://crudcrud.com/api/00c9a7614036429389bf235b70c1b1cd/Work/${myObj._id}`)
+                .then((respone)=>{
+                    if(respone.status === 200){
+                    parentElem.removeChild(childelem);
+                    }  
+                })
+                .catch((err)=>{
+                    console.log(err);
+                })
+            });
+            const heading = document.createElement('h1');
+            heading.innerText = 'products';
+            userInfo.innerText = `${myObj.selling}-${myObj.Category}-${myObj.name}`;
+            childelem.appendChild(userInfo);
+            childelem.appendChild(deleteBtn);
+            childelem.appendChild(editBtn);
+            if (myObj.Category === "Food") {
+            const foodItemsHeading = document.getElementById('food-items-heading');
+            if (!foodItemsHeading) {
+                const heading = document.createElement('h2');
+                heading.id = 'food-items-heading';
+                heading.innerText = 'Food-Items';
+                parentElem.appendChild(heading);
+            }
+            parentElem.appendChild(childelem);
+            } else if (myObj.Category === "Electronics") {
+            const electronicsItemsHeading = document.getElementById('electronics-items-heading');
+            if (!electronicsItemsHeading) {
+                if (!electronicsItemsHeading) {
+                    const heading = document.createElement('h2');
+                    heading.id = 'electronics-items-heading';
+                    heading.innerText = 'Electronics-Items';
+                    parentElem.appendChild(heading);
+                }
+            }
+            parentElem.appendChild(childelem);
+            } else if (myObj.Category === "Skincare") {
+                const skincareItemsHeading = document.getElementById('skincare-items-heading');
+                if (!skincareItemsHeading) {
+                    const heading = document.createElement('h2');
+                    heading.id = 'skincare-items-heading';
+                    heading.innerText = 'Skincare-Items';
+                    parentElem.appendChild(heading);
+                }
+                parentElem.appendChild(childelem);
+            }else {
+                    parentElem.appendChild(childelem);
+                }
+            }
+        
+    </script>
+</body>
+
+</html>
