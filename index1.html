@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form onsubmit="saveToLocal(e)" >
+        <label >Name:</label>
+        <input type="text" name="name" required>
+        <label >Email:</label>
+        <input type="email" name="email" required>
+        <label >Phone-number:</label>
+        <input type="tel" name="phone-number">
+        <button>Submit</button>   
+    </form>   
+       
+    <ul id="users"></ul>
+    <script type="text/javascript">
+      function saveToLocal(e){
+        const name=e.target.name.value;
+       const email=e.target.email.value;
+       const phonenumber=e.target.phonenumber.value;
+        let myObj ={
+        name ,
+        email ,
+        phonenumber
+      }
+
+      localStorage.setItem(myObj.email,JSON.stringify(myObj));
+      
+      showUser(myObj);
+      }
+      function showUser(myObj){
+        const parentElem = document.getElementById('users');
+        
+        childelem.innerHTML=parentElem.innerHTML+`<li>${myObj.name}-${myObj.email}-${myObj.phonenumber}</li>`;
+        
+      }
+
+    </script> 
+      
+</body>
+
+</html>
