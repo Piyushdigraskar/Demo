@@ -1,12 +1,19 @@
 const http = require('http')
 
-const { buffer } = require('stream/consumers');
+const express = require('express');
 
-const route = require('./route')
+const app = express();
 
-const server = http.createServer(route);
-//  for second cases in module.exports we have to give:
-//  const server = http.createServer(route.handler);
+app.use((req,res,next)=>{
+    console.log("in the middleware");
+    next();
+});
+
+app.use((req,res,next)=>{
+    console.log("in another middleware");
+    res.send('<h1>Hello from express</h1>');
+});
+
+app.listen(3000);
 
 
-server.listen(3000)
